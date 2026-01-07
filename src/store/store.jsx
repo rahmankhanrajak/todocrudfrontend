@@ -1,14 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { todosApi } from "./todosApi";
+import authReducer from "./authSlice";
 import { authApi } from "./authApi";
+import { todosApi } from "./todosApi";
 
 export const store = configureStore({
   reducer: {
-    [todosApi.reducerPath]: todosApi.reducer,    
-    [authApi.reducerPath]: authApi.reducer,       
+    auth: authReducer,
+    [authApi.reducerPath]: authApi.reducer,
+    [todosApi.reducerPath]: todosApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(todosApi.middleware)                
-      .concat(authApi.middleware),               
+      .concat(authApi.middleware)
+      .concat(todosApi.middleware),
 });

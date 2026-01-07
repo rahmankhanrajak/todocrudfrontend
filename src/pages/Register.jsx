@@ -6,60 +6,24 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const [register] = useRegisterMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-
-    try {
-      await register({ name, email, password }).unwrap();
-      navigate("/login");
-    } catch (err) {
-      console.error("Register error:", err);
-      setError(err?.data?.message || "Register failed");
-    }
+    await register({ name, email, password }).unwrap();
+    navigate("/login");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Register</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <div>
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      <button type="submit">Register</button>
-
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+      <button>Register</button>
+      <p>Already have an account? <Link to="/login">Login</Link></p>
     </form>
   );
 }

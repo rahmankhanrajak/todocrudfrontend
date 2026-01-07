@@ -1,37 +1,15 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-let getAccessToken = null;
-
-export const setTokenGetter = (getter) => {
-  getAccessToken = getter;
-};
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 export const todosApi = createApi({
   reducerPath: "todosApi",
-
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3036",
-    credentials: "include",
-
-    prepareHeaders: (headers) => {
-      const token = getAccessToken ? getAccessToken() : null;
-
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
-
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["Todos"],
-
   endpoints: (builder) => ({
     getTodos: builder.query({
       query: () => "/todos",
       providesTags: ["Todos"],
     }),
-
     addTodo: builder.mutation({
       query: (body) => ({
         url: "/todos",
@@ -40,7 +18,6 @@ export const todosApi = createApi({
       }),
       invalidatesTags: ["Todos"],
     }),
-
     updateTodo: builder.mutation({
       query: ({ id, title }) => ({
         url: `/todos/${id}`,
@@ -49,7 +26,6 @@ export const todosApi = createApi({
       }),
       invalidatesTags: ["Todos"],
     }),
-
     deleteTodo: builder.mutation({
       query: (id) => ({
         url: `/todos/${id}`,
