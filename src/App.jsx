@@ -5,13 +5,17 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Todos from "./pages/Todos";
 import { useRefreshMutation } from "./store/authApi";
-import { setAccessToken } from "./store/authSlice";
+import { setAccessToken, authReady } from "./store/authSlice";
 
 const PrivateRoute = ({ children }) => {
-  const {  accessToken } = useSelector((state) => state.auth);
+  const { accessToken, isAuthReady } = useSelector((state) => state.auth);
+
+  if (!isAuthReady) {
+    return <div>Loading...</div>;
+  }
+
   return accessToken ? children : <Navigate to="/login" replace />;
 };
-
 
 export default function App() {
   const dispatch = useDispatch();
@@ -23,6 +27,8 @@ export default function App() {
         const res = await refresh().unwrap();
         dispatch(setAccessToken(res.accessToken));
       } catch {
+      } finally {
+        dispatch(authReady()); 
       }
     };
 
